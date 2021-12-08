@@ -58,7 +58,9 @@ func (h *Hub) SubscribeHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			heartbeatTimer.Reset(h.heartbeat)
 		case update, ok := <-s.Receive():
+			h.logger.Info("Subscriber:received update")
 			if !ok || !h.write(w, s, newSerializedUpdate(update).event) {
+				h.logger.Info("Subscriber:received not ok")
 				return
 			}
 			if heartbeatTimer != nil {
@@ -106,7 +108,9 @@ func (h *Hub) registerSubscriber(w http.ResponseWriter, r *http.Request) *Subscr
 	s.SetTopics(topics, privateTopics)
 
 	h.dispatchSubscriptionUpdate(s, true)
-	if err := h.transport.AddSubscriber(s); err != nil {
+	if err := h.transport.AddSubscriber(s); err == nil {
+		h.dispatchSubscriptionUpdate(s, true)
+	} else {
 		http.Error(w, http.StatusText(http.StatusServiceUnavailable), http.StatusServiceUnavailable)
 		h.dispatchSubscriptionUpdate(s, false)
 		if c := h.logger.Check(zap.ErrorLevel, "Unable to add subscriber"); c != nil {
