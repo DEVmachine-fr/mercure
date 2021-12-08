@@ -93,10 +93,10 @@ dockers:
     goos: linux
     goarch: amd64
     image_templates:
-      - "dunglas/mercure:{{ .Tag }}-amd64"
-      - "dunglas/mercure:v{{ .Major }}-amd64"
-      - "dunglas/mercure:v{{ .Major }}.{{ .Minor }}-amd64"
-      - "dunglas/mercure:latest-amd64"
+      - "ghcr.io/devmachine-fr/mercure:{{ .Tag }}-amd64"
+      - "ghcr.io/devmachine-fr/mercure:v{{ .Major }}-amd64"
+      - "ghcr.io/devmachine-fr/mercure:v{{ .Major }}.{{ .Minor }}-amd64"
+      - "ghcr.io/devmachine-fr/mercure:latest-amd64"
     use: buildx
     build_flag_templates:
       - "--platform=linux/amd64"
@@ -108,10 +108,10 @@ dockers:
     goos: linux
     goarch: arm64
     image_templates:
-      - "dunglas/mercure:{{ .Tag }}-arm64v8"
-      - "dunglas/mercure:v{{ .Major }}-arm64v8"
-      - "dunglas/mercure:v{{ .Major }}.{{ .Minor }}-arm64v8"
-      - "dunglas/mercure:latest-arm64v8"
+      - "ghcr.io/devmachine-fr/mercure:{{ .Tag }}-arm64v8"
+      - "ghcr.io/devmachine-fr/mercure:v{{ .Major }}-arm64v8"
+      - "ghcr.io/devmachine-fr/mercure:v{{ .Major }}.{{ .Minor }}-arm64v8"
+      - "ghcr.io/devmachine-fr/mercure:latest-arm64v8"
     use: buildx
     build_flag_templates:
       - "--platform=linux/arm64/v8"
@@ -122,36 +122,24 @@ dockers:
       - legacy
     dockerfile: Dockerfile.legacy
     image_templates:
-      - "dunglas/mercure:legacy-{{ .Tag }}"
-      - "dunglas/mercure:legacy-v{{ .Major }}"
-      - "dunglas/mercure:legacy-v{{ .Major }}.{{ .Minor }}"
-      - "dunglas/mercure:legacy-latest"
+      - "ghcr.io/devmachine-fr/mercure:legacy-{{ .Tag }}"
+      - "ghcr.io/devmachine-fr/mercure:legacy-v{{ .Major }}"
+      - "ghcr.io/devmachine-fr/mercure:legacy-v{{ .Major }}.{{ .Minor }}"
+      - "ghcr.io/devmachine-fr/mercure:legacy-latest"
 docker_manifests:
-  - name_template: dunglas/mercure:{{ .Tag }}
+  - name_template: ghcr.io/devmachine-fr/mercure:{{ .Tag }}
     image_templates:
-      - dunglas/mercure:{{ .Tag }}-amd64
-      - dunglas/mercure:{{ .Tag }}-arm64v8
-  - name_template: dunglas/mercure:v{{ .Major }}
+      - ghcr.io/devmachine-fr/mercure:{{ .Tag }}-amd64
+      - ghcr.io/devmachine-fr/mercure:{{ .Tag }}-arm64v8
+  - name_template: ghcr.io/devmachine-fr/mercure:v{{ .Major }}
     image_templates:
-      - dunglas/mercure:v{{ .Major }}-amd64
-      - dunglas/mercure:v{{ .Major }}-arm64v8
-  - name_template: dunglas/mercure:v{{ .Major }}.{{ .Minor }}
+      - ghcr.io/devmachine-fr/mercure:v{{ .Major }}-amd64
+      - ghcr.io/devmachine-fr/mercure:v{{ .Major }}-arm64v8
+  - name_template: ghcr.io/devmachine-fr/mercure:v{{ .Major }}.{{ .Minor }}
     image_templates:
-      - dunglas/mercure:v{{ .Major }}.{{ .Minor }}-amd64
-      - dunglas/mercure:v{{ .Major }}.{{ .Minor }}-arm64v8
-  - name_template: dunglas/mercure:latest
+      - ghcr.io/devmachine-fr/mercure:v{{ .Major }}.{{ .Minor }}-amd64
+      - ghcr.io/devmachine-fr/mercure:v{{ .Major }}.{{ .Minor }}-arm64v8
+  - name_template: ghcr.io/devmachine-fr/mercure:latest
     image_templates:
-      - dunglas/mercure:latest-amd64
-      - dunglas/mercure:latest-arm64v8
-signs:
-  - artifacts: checksum
-    args:
-      [
-        "--batch",
-        "-u",
-        "{{ .Env.GPG_FINGERPRINT }}",
-        "--output",
-        "${signature}",
-        "--detach-sign",
-        "${artifact}",
-      ]
+      - ghcr.io/devmachine-fr/mercure:latest-amd64
+      - ghcr.io/devmachine-fr/mercure:latest-arm64v8
