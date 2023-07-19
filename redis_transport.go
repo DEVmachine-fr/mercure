@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"sync"
 
-	redis "github.com/go-redis/redis/v8"
+	redis "github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 )
 
@@ -37,7 +37,7 @@ type RedisTransport struct {
 }
 
 // NewRedisTransport create a new RedisTransport.
-func NewRedisTransport(u *url.URL, l Logger, tss *TopicSelectorStore) (Transport, error) { //nolint:ireturn
+func NewRedisTransport(u *url.URL, l Logger) (Transport, error) { //nolint:ireturn
 	var err error
 	q := u.Query()
 	bucketName := defaultRedisBucketName
@@ -97,7 +97,7 @@ func NewRedisTransport(u *url.URL, l Logger, tss *TopicSelectorStore) (Transport
 
 func subscribeToUpdate(t *RedisTransport) {
 	t.logger.Info("subscribeToUpdate:Subscribe")
-	pubsub := t.client.Subscribe(t.ctx, bucket_name)
+	pubsub := t.client.Subscribe(t.ctx, t.bucketName)
 	t.logger.Info("subscribeToUpdate:pubsub.Channel")
 	ch := pubsub.Channel()
 	for msg := range ch {
@@ -158,7 +158,7 @@ func (t *RedisTransport) Dispatch(update *Update) error {
 
 	t.logger.Info("Dispatch:Publish")
 	// publish in pubsub for others mercure instances to consume the update and dispatch it to its subscribers
-	if err := t.client.Publish(t.ctx, bucket_name, updateJSON).Err(); err != nil {
+	if err := t.client.Publish(t.ctx, t.bucketName, updateJSON).Err(); err != nil {
 		return fmt.Errorf("error when publishing update: %w", err)
 	}
 
