@@ -70,9 +70,17 @@ func NewRedisTransport(u *url.URL, l Logger) (Transport, error) { //nolint:iretu
 		return nil, &TransportError{u.Redacted(), "missing path", err}
 	}
 
+	// The Redis password comes from the URL, as in redis://:password@host:26379?master=mymaster.
+	// The Sentinel is asked without password.
+	password := ""
+	if u.User != nil {
+		password, _ = u.User.Password()
+	}
+
 	client := redis.NewFailoverClient(&redis.FailoverOptions{
 		MasterName:    q.Get("master"),
 		SentinelAddrs: []string{path},
+		Password:      password,
 	})
 
 	ctx := context.Background()
